@@ -38,14 +38,19 @@
 # operator deliberately wants root semantics — e.g. inspecting root-only
 # state via the hermes CLI. Default is to drop.
 
-set -e
-
-REAL=/opt/hermes/.venv/bin/hermes
+CMD_NAME="$(basename "$0")"
+if [ "$CMD_NAME" = "lexi" ] && [ -x /opt/hermes/.venv/bin/lexi ]; then
+    REAL=/opt/hermes/.venv/bin/lexi
+elif [ -x /opt/hermes/.venv/bin/hermes ]; then
+    REAL=/opt/hermes/.venv/bin/hermes
+else
+    REAL=/opt/hermes/.venv/bin/lexi
+fi
 
 # Defensive: if the venv binary is missing (corrupted image, partial
 # install), fail loudly rather than silently masking it.
 if [ ! -x "$REAL" ]; then
-    echo "hermes-shim: $REAL not found or not executable" >&2
+    echo "exec-shim: $REAL not found or not executable" >&2
     exit 127
 fi
 

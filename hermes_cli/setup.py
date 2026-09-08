@@ -557,9 +557,13 @@ from hermes_cli.setup_migration import _offer_openclaw_migration, _skip_configur
 from hermes_cli.setup_quick import _run_portal_one_shot, _run_quick_setup  # noqa: E402
 
 
-# ── Main Wizard Orchestrator ──
+def _run_onboarding_section(config: dict) -> None:
+    from hermes_cli.onboarding import run_onboarding_wizard
+    run_onboarding_wizard()
+
 
 SETUP_SECTIONS = [
+    ("onboarding", "Lexi Onboarding & Intake", _run_onboarding_section),
     ("model", "Model & Provider", setup_model_provider),
     ("tts", "Text-to-Speech", setup_tts),
     ("terminal", "Terminal Backend", setup_terminal_backend),
@@ -648,8 +652,8 @@ def _run_full_setup(config: dict, hermes_home, *, is_existing: bool, migration_r
 
 # First-time mode picker: (menu label, setup_quick runner name) — None falls through to Full Setup.
 _FIRST_TIME_MODES = (
-    ("Quick Setup (Nous Portal) — free OAuth login, no API keys, model + tools (recommended)",
-     "_run_first_time_quick_setup"),
+    ("Lexi Turnkey Onboarding — User profile, local vLLM (Gemma 12B), Google Workspace & Telegram (recommended)",
+     "_run_lexi_onboarding"),
     ("Full setup — configure every provider, tool & option yourself (bring your own keys)", None),
     ("Blank Slate — everything off except the bare minimum; opt in to each capability", "_run_blank_slate_setup"),
 )
@@ -690,9 +694,9 @@ def _run_setup_wizard_impl(args):
     from hermes_cli.auth import get_active_provider
     is_existing = bool(get_env_value("OPENROUTER_API_KEY") or get_env_value("OPENAI_BASE_URL")
                        or get_active_provider() is not None)
-    _print_banner("│             ⚕ Hermes Agent Setup Wizard                │",
+    _print_banner("│             ✦ Lexi VPA Setup Wizard                    │",
                   "├─────────────────────────────────────────────────────────┤",
-                  "│  Let's configure your Hermes Agent installation.       │",
+                  "│  Let's configure your Lexi Personal Assistant.          │",
                   "│  Press Ctrl+C at any time to exit.                     │")
     migration_ran = False
     if is_existing:

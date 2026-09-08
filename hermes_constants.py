@@ -43,12 +43,28 @@ def get_hermes_home_override() -> str | None:
 
 
 def _get_platform_default_hermes_home() -> Path:
-    """Return the platform-native default Hermes home path."""
+    """Return the platform-native default Lexi/Hermes home path."""
     if sys.platform == "win32":
         local_appdata = os.environ.get("LOCALAPPDATA", "").strip()
         base = Path(local_appdata) if local_appdata else Path.home() / "AppData" / "Local"
-        return base / "hermes"
-    return Path.home() / ".hermes"
+        lexi_path = base / "lexi"
+        hermes_path = base / "hermes"
+        if lexi_path.exists():
+            return lexi_path
+        if hermes_path.exists():
+            return hermes_path
+        if os.environ.get("LEXI_HOME"):
+            return lexi_path
+        return hermes_path
+    lexi_unix = Path.home() / ".lexi"
+    hermes_unix = Path.home() / ".hermes"
+    if lexi_unix.exists():
+        return lexi_unix
+    if hermes_unix.exists():
+        return hermes_unix
+    if os.environ.get("LEXI_HOME"):
+        return lexi_unix
+    return hermes_unix
 
 
 def _warn_profile_fallback_once() -> None:
@@ -80,11 +96,11 @@ def _warn_profile_fallback_once() -> None:
 
 
 def get_hermes_home() -> Path:
-    """Hermes home: context-local override → ``HERMES_HOME`` env var → platform default."""
+    """Lexi/Hermes home: context-local override → LEXI_HOME / HERMES_HOME env var → platform default."""
     override = get_hermes_home_override()
     if override:
         return Path(override)
-    if not os.environ.get("HERMES_HOME", "").strip():
+    if not os.environ.get("LEXI_HOME", "").strip() and not os.environ.get("HERMES_HOME", "").strip():
         _warn_profile_fallback_once()
     return get_process_hermes_home()
 
@@ -129,12 +145,12 @@ def reset_hermes_home_key_cache() -> None:
 
 
 def get_process_hermes_home() -> Path:
-    """Hermes home of the running process, ignoring task overrides.
+    """Lexi/Hermes home of the running process, ignoring task overrides.
 
     For process-level assets (theme YAML, dashboard plugin manifests) that must stay visible while a
     request is scoped to another profile (e.g. embedded ``/chat`` under ``--open-profile``).
     """
-    val = os.environ.get("HERMES_HOME", "").strip()
+    val = os.environ.get("LEXI_HOME", "").strip() or os.environ.get("HERMES_HOME", "").strip()
     return Path(val) if val else _get_platform_default_hermes_home()
 
 

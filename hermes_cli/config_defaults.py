@@ -21,6 +21,20 @@ def _aux(timeout, *, reasoning_effort=True, **extra):
 DEFAULT_CONFIG = {
     "model": "",
     "providers": {},
+    "briefings": {
+        "morning_brief": {
+            "enabled": True,
+            "time": "08:00",
+            "channel": "telegram",
+            "prompt": "Deliver a concise morning brief: today's schedule, key priorities, weather summary, and urgent emails.",
+        },
+        "evening_recap": {
+            "enabled": True,
+            "time": "18:00",
+            "channel": "telegram",
+            "prompt": "Deliver a concise evening recap: tasks accomplished today, pending items, and a preview of tomorrow.",
+        },
+    },
     "fallback_providers": [],
     "credential_pool_strategies": {},
     "toolsets": ["hermes-cli"],

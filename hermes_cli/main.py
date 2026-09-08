@@ -1771,6 +1771,7 @@ def _forward_command(name: str, module: str, attr: str, *, forward_return: bool 
     return _cmd
 
 
+cmd_onboarding = _forward_command("cmd_onboarding", "hermes_cli.onboarding", "run_onboarding_wizard", doc='Turnkey onboarding wizard for Lexi VPA.')
 cmd_setup = _forward_command("cmd_setup", "hermes_cli.setup", "run_setup_wizard", doc='Interactive setup wizard.')
 cmd_login = _forward_command("cmd_login", "hermes_cli.auth", "login_command", doc='Authenticate Hermes CLI with a provider.')
 cmd_logout = _forward_command("cmd_logout", "hermes_cli.auth", "logout_command", doc='Clear provider authentication.')
@@ -3181,6 +3182,13 @@ def _build_cli_parser():
         _lsp_register(subparsers)
     except Exception as _lsp_err:  # noqa: BLE001
         logger.debug("LSP CLI registration failed: %s", _lsp_err)
+
+    onboarding_parser = subparsers.add_parser(
+        "onboarding", help="Turnkey onboarding wizard for Lexi VPA",
+        description="Run the interactive intake process to set up your profile, vLLM, Google Workspace, and Telegram."
+    )
+    onboarding_parser.add_argument("--non-interactive", action="store_true", help="Apply defaults non-interactively")
+    onboarding_parser.set_defaults(func=lambda args: cmd_onboarding(getattr(args, "non_interactive", False)))
 
     build_setup_parser(subparsers, cmd_setup=cmd_setup)
     build_whatsapp_parser(subparsers, cmd_whatsapp=cmd_whatsapp)

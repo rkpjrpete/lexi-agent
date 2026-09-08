@@ -15,6 +15,12 @@ _MESSAGING_PLATFORMS = (("TELEGRAM", "Telegram", "📱"), ("DISCORD", "Discord",
 
 
 
+def _run_lexi_onboarding(config: dict, hermes_home, is_existing: bool) -> None:
+    """Run the Lexi turnkey onboarding wizard."""
+    from hermes_cli.onboarding import run_onboarding_wizard
+    run_onboarding_wizard()
+
+
 def _blank_slate_done(config: dict, hermes_home, tools_line: str, *extra: str, intro: str | None = None) -> None:
     """Shared Blank Slate epilogue: success banner, the "enable later" hints, then the summary."""
     from hermes_cli.setup import _info, _print_setup_summary, print_success

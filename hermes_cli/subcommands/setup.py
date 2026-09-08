@@ -14,7 +14,7 @@ def build_setup_parser(subparsers, *, cmd_setup: Callable) -> None:
         "hermes setup model|tts|terminal|gateway|tools|telemetry|agent")
     setup_parser.add_argument(
         "section", nargs="?",
-        choices=["model", "tts", "terminal", "gateway", "tools", "telemetry", "agent"],
+        choices=["onboarding", "model", "tts", "terminal", "gateway", "tools", "telemetry", "agent"],
         default=None, help="Run a specific setup section instead of the full wizard")
     setup_parser.add_argument(
         "--non-interactive", action="store_true",

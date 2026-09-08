@@ -50,7 +50,7 @@ class TestGetHermesHome:
                 )
                 assert home == base / "hermes"
             else:
-                assert home == Path.home() / ".hermes"
+                assert home in (Path.home() / ".hermes", Path.home() / ".lexi")
 
 
 class TestEnsureHermesHome:
